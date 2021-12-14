@@ -41,15 +41,15 @@ function createTimeOutEvent(object, dateStamp) {
 
 function hoursWorkedOnDate(object, dateString) {
     console.log(object)
-    createTimeInEvent(object, dateStamp)
-    createTimeOutEvent(object, dateStamp)
+    createTimeInEvent(object, "0044-03-15 0900")
+    createTimeOutEvent(object, "0044-03-15 1100")
     console.log(object.timeInEvents)
     console.log(object.timeOutEvents[0].hour)
     console.log(object.timeInEvents[0].hour)
     return (object.timeOutEvents[0].hour - object.timeInEvents[0].hour) / 100
 }
 
-console.log(hoursWorkedOnDate(createEmployeeRecord(["Julius", "Caesar", "General", 1000]), "0044-03-15"))
+console.log(hoursWorkedOnDate(createEmployeeRecord(["Julius", "Caesar", "General", 27]), "0044-03-15"))
 
 // function wagesEarnedOnDate(object, dateString) {
 //     return hoursWorkedOnDate(object, dateString) * object.payPerHour.value
