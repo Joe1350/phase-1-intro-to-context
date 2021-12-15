@@ -20,37 +20,46 @@ function createEmployeeRecords(arrays) {
 }
 
 function createTimeInEvent(object, dateStamp) {
-    let timeInEventsValue = {
+    let [date, hour] = dateStamp.split(' ')
+    object.timeInEvents.push({
         type: 'TimeIn',
-        hour: parseInt(dateStamp.slice(11)),
-        date: dateStamp.slice(0, 10)
-    }
-    object['timeInEvents'] = [timeInEventsValue]
+        hour: parseInt(hour, 10),
+        date: date
+    })
     return object
 }
 
 function createTimeOutEvent(object, dateStamp) {
-    let timeOutEventsValue = {
+    let [date, hour] = dateStamp.split(' ')
+    object.timeOutEvents.push({
         type: 'TimeOut',
-        hour: parseInt(dateStamp.slice(11)),
-        date: dateStamp.slice(0, 10)
-    }
-    object['timeOutEvents'] = [timeOutEventsValue]
+        hour: parseInt(hour, 10),
+        date: date
+    })
     return object
 }
 
-function hoursWorkedOnDate(object, dateString) {
-    console.log(object)
-    createTimeInEvent(object, "0044-03-15 0900")
-    createTimeOutEvent(object, "0044-03-15 1100")
-    console.log(object.timeInEvents)
-    console.log(object.timeOutEvents[0].hour)
-    console.log(object.timeInEvents[0].hour)
-    return (object.timeOutEvents[0].hour - object.timeInEvents[0].hour) / 100
+function hoursWorkedOnDate(object, date) {
+    let inTime = object.timeInEvents.find(element => element.date === date)
+    let outTime = object.timeOutEvents.find(element => element.date === date)
+    return (outTime.hour - inTime.hour) / 100
 }
 
-console.log(hoursWorkedOnDate(createEmployeeRecord(["Julius", "Caesar", "General", 27]), "0044-03-15"))
+function wagesEarnedOnDate(object, date) {
+    let wages = hoursWorkedOnDate(object, date) * object.payPerHour
+    return parseFloat(wages.toString())
+}
 
-// function wagesEarnedOnDate(object, dateString) {
-//     return hoursWorkedOnDate(object, dateString) * object.payPerHour.value
-// }
+function allWagesFor(object) {
+    let availableDates = object.timeInEvents.map((element) => {return element.date})
+    let payable = availableDates.reduce((acc, date) => {
+        return acc + wagesEarnedOnDate(object, date)
+    }, 0)
+    return payable
+}
+
+function calculatePayroll(array) {
+    return array.reduce(((acc, item) => {
+        return acc + allWagesFor(item)
+    }), 0)
+}
